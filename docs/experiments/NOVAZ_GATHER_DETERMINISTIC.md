@@ -133,3 +133,24 @@ Implementation order:
 5. validate through OpenBWAdapter
 6. expose through PythonBridge
 7. only then connect to a learning policy
+
+
+## Follow-on milestone: deterministic Drone production
+
+Test: `NovaBW.ZergDroneProductionDeterministic`
+
+After Gather was validated end-to-end, the next economy primitive was tested directly through BWAPI before protocol exposure.
+
+Observed result:
+
+- completed Hatchery selected: ID 69
+- starting completed Drone count: 4
+- starting minerals: 50
+- `Hatchery::train(Zerg_Drone)` accepted at frame 0
+- completed Drone count: 4 → 5
+- minerals: 50 → 0
+- production completion observed at frame 337
+- `NovaBW.ZergDroneProductionDeterministic`: PASS
+- runtime approximately 0.9 seconds
+
+This establishes the deterministic runtime baseline for Drone production. The next step is to represent production through the common Action protocol and validate the same state transition through `OpenBWAdapter`.
