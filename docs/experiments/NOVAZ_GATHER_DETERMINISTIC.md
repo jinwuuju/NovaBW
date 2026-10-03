@@ -450,3 +450,39 @@ This validates explicit Larva control through the runtime-independent NovaBW abs
 common Observation → specific Larva ID → common Morph(Drone) → OpenBWAdapter → BWAPI → actual Drone completion.
 
 Next bundled target: expose Larva/Morph through PythonBridge and extend the same production path to Zergling.
+
+
+## Follow-on milestone: Python-controlled explicit Larva morph
+
+Test: `NovaBW.PythonLarvaMorphIntegration`
+
+`PythonBridge` was extended to serialize explicit Larva semantics:
+
+- `larva`
+- `parentUnitId`
+
+and to parse the common `Morph` action.
+
+A deterministic Python controller selected a specific observed Larva, reused the observed Drone type ID as the requested morph target, and returned a common `Morph` action.
+
+Observed result:
+
+- starting completed Drones: 4
+- starting Larvae: 3
+- starting minerals: 50
+- selected Larva ID: 78
+- parent unit ID: 64
+- Drone type ID: 41
+- Morph received from Python at frame 0
+- Morph executed through `OpenBWAdapter`
+- completed Drones: 4 → 5
+- minerals: 50 → 0
+- completion observed at frame 337
+- `NovaBW.PythonLarvaMorphIntegration`: PASS
+- runtime approximately 0.9 seconds
+
+This validates the complete explicit Zerg production path:
+
+OpenBW → common Observation with Larva identity/parent → Python policy selects a specific Larva → common Morph action → PythonBridge → OpenBWAdapter → BWAPI → actual completed Drone increase.
+
+Next bundled target: add building construction for Spawning Pool and then produce Zerglings through the same explicit Larva/Morph path.
