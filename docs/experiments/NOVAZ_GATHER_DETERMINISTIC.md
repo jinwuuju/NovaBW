@@ -902,3 +902,35 @@ This demonstrates that continuous combat-unit replenishment is required for comp
 Known infrastructure issue:
 
 After the opponent game had already ended, the opponent child process emitted a SIGSEGV during OpenBW/ASIO teardown. The primary test process still completed with `won=1` and PASS. Treat this as teardown/infrastructure debt to isolate separately; do not conflate it with gameplay correctness.
+
+
+## Full Game v0 multi-map evaluation — 18/19 wins
+
+Evaluation: `NovaBW.PythonNovaZFullGameV0` across six maps and all configured starting-location seeds.
+
+Aggregate result:
+
+- PASS: 18/19 (94.7%)
+- Wins: 18/19 (94.7%)
+- Spawning Pool completed: 19/19 (100%)
+- enemy observed: 18/19 (94.7%)
+- actual enemy damage observed: 18/19 (94.7%)
+
+Per-map wins:
+
+- Benzene: 2/2
+- Destination: 2/2
+- Neo Moon Glaive: 3/3
+- Fighting Spirit: 4/4
+- Circuit Breaker: 3/4
+- Python: 4/4
+
+CSV: `runs/nova_z_fullgame_multimap.csv`
+
+Interpretation:
+
+The remaining failure is isolated to one Circuit Breaker starting-location seed. Because Pool completion is 19/19 while enemy observation and damage are both 18/19, the remaining failure is more likely in scouting/search coverage or long-horizon target reacquisition than in the core economy/tech/production path.
+
+Next action:
+
+Identify the exact failed Circuit Breaker seed, reproduce it alone, inspect scouting progression, and fix map-search robustness without disturbing the frozen 19/19 first-damage baseline.
