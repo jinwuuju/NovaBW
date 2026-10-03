@@ -972,3 +972,39 @@ Re-test of the previously failing Circuit Breaker start:
 This is the first explicit Nova-Z multitasking scheduling fix: continuous production can no longer starve map search.
 
 Known infrastructure issue remains: the opponent child process can emit SIGSEGV during OpenBW/ASIO teardown after game termination while the primary process still records a valid win and PASS.
+
+
+## Milestone: Nova-Z Full Game v0 multi-map stable
+
+Evaluation: `NovaBW.PythonNovaZFullGameV0` across six maps and all configured starting-location seeds.
+
+Final result:
+
+- PASS: 19/19 (100%)
+- Wins: 19/19 (100%)
+- Spawning Pool completed: 19/19 (100%)
+- enemy observed: 19/19 (100%)
+- actual enemy damage observed: 19/19 (100%)
+
+Per-map wins:
+
+- Benzene: 2/2
+- Destination: 2/2
+- Neo Moon Glaive: 3/3
+- Fighting Spirit: 4/4
+- Circuit Breaker: 4/4
+- Python: 4/4
+
+CSV: `runs/nova_z_fullgame_multimap.csv`
+
+This establishes `Nova-Z Full Game v0` as a stable passive-opponent complete-game baseline across the current multi-map/all-start-location evaluation suite.
+
+The first Zerg vertical slice is now frozen as a regression/reference baseline:
+
+economy -> supply -> Spawning Pool -> continuous Zergling production -> scouting -> enemy acquisition -> combat -> actual victory.
+
+Next phase: complete the Zerg control surface.
+
+Immediate capability bundle:
+
+Extractor construction -> gas gathering -> verified gas increase -> Hatchery-to-Lair morph -> verified Lair completion.
