@@ -184,3 +184,40 @@ This validates the path:
 common Observation → common Train Action → OpenBWAdapter → BWAPI → actual completed Drone increase.
 
 Next step: expose `Train` and `unitTypeId` through PythonBridge and validate the same production state change end-to-end from Python.
+
+
+## Follow-on milestone: PythonBridge end-to-end Drone production
+
+Test: `NovaBW.PythonDroneProductionIntegration`
+
+`PythonBridge` was extended to parse:
+
+- `actionType = "Train"`
+- `unitTypeId`
+
+A dedicated deterministic Python server, `python/train_drone_test_server.py`, receives the common Observation, derives the Drone type ID from observed units, selects the starting Hatchery as producer, and sends one Train action.
+
+Observed Python-side behavior:
+
+- frame 0: minerals = 50, own units = 9
+- Train sent from Python with producer ID and Drone unit type ID
+- frame 8: minerals = 0, confirming the production cost was applied
+- frame 336: own units = 10, confirming a new unit appeared
+
+Final integration result:
+
+- `NovaBW.PythonDroneProductionIntegration`: PASS
+- 1 test run
+- 1 test passed
+- runtime approximately 1.0 second
+
+This validates the complete production path:
+
+OpenBW → common Observation → PythonBridge → Python → common Train Action → PythonBridge → OpenBWAdapter → BWAPI → actual completed Drone increase.
+
+At this point Nova-Z has two end-to-end Python-controlled economy primitives:
+
+1. Gather minerals
+2. Produce a Drone
+
+Next curriculum target: Overlord production and supply management, validated by an actual increase in completed Overlord count and total supply.
