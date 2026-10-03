@@ -934,3 +934,41 @@ The remaining failure is isolated to one Circuit Breaker starting-location seed.
 Next action:
 
 Identify the exact failed Circuit Breaker seed, reproduce it alone, inspect scouting progression, and fix map-search robustness without disturbing the frozen 19/19 first-damage baseline.
+
+
+## Full Game v0 scheduler v2: scouting starvation fixed
+
+A remaining Circuit Breaker failure exposed an action-scheduling bug rather than a combat or production failure.
+
+Before the fix, the Full Game controller could continuously produce Zerglings while never allocating a Move action to scouting:
+
+- Pool completed
+- maximum Zerglings reached 164
+- supplyTotal reached 194
+- Move actions: 0
+- enemy observed: no
+- Attack actions: 0
+- result: loss by time limit
+
+The Full Game scheduler was restructured so periodic scouting receives a guaranteed action slot above continuous combat production. A dedicated scout unit is retained until lost, then reassigned.
+
+Re-test of the previously failing Circuit Breaker start:
+
+- result: won=1
+- Gather actions: 6
+- Build actions: 1
+- Morph actions: 19
+- Move actions: 15
+- Attack actions: 151
+- Spawning Pool completed
+- maximum completed Drones: 5
+- maximum completed Zerglings: 21
+- BWAPI supplyTotal: 18 -> 50
+- enemy observed: yes
+- actual enemy damage observed: yes
+- game ended at approximately 7,195 frames
+- test runtime approximately 14.0 seconds
+
+This is the first explicit Nova-Z multitasking scheduling fix: continuous production can no longer starve map search.
+
+Known infrastructure issue remains: the opponent child process can emit SIGSEGV during OpenBW/ASIO teardown after game termination while the primary process still records a valid win and PASS.
