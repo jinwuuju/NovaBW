@@ -1046,3 +1046,40 @@ This validates the first Phase 2 tech chain beyond the Pool/Zergling vertical sl
 Next step:
 
 Expose Extractor build candidates, refinery gas gathering, and Hatchery-to-Lair morph options through the backend-independent common protocol and PythonBridge, then validate the entire Gas -> Lair chain under Python control.
+
+
+## Phase 2 milestone: Gas -> Lair through common OpenBWAdapter
+
+Test: `NovaBW.ZergGasToLairThroughAdapter`
+
+The full Gas -> Lair chain now executes through NovaBW common actions rather than direct BWAPI commands.
+
+Verified common-action sequence:
+
+1. common Gather for mineral workers
+2. common Build Spawning Pool
+3. common Build Extractor
+4. common Gather targeting the owned completed Extractor
+5. verify actual owned gas increases
+6. common Morph Hatchery -> Lair
+7. verify actual completed Lair
+
+Observed result:
+
+- common Hatchery -> Lair Morph accepted at frame 4190 with 280 minerals / 104 gas
+- actual gas reached 108 by Lair completion
+- completed Lair observed at frame 5702
+- final gas observed: 556
+- Pool build/completion: yes
+- Extractor build/completion: yes
+- gas Gather accepted: yes
+- gas increase observed: yes
+- Lair morph/start/completion: yes
+- `NovaBW.ZergGasToLairThroughAdapter`: PASS
+- runtime approximately 15.9 seconds
+
+This validates the Phase 2 Gas -> Lair capability through the backend-independent NovaBW action layer.
+
+Next step:
+
+Expose semantic Extractor/refinery observations plus Extractor build candidates and Hatchery-to-Lair morph options through PythonBridge, then validate the same chain under Python policy control without hard-coded BWAPI unit IDs.
