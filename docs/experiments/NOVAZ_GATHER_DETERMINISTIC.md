@@ -2,42 +2,31 @@
 
 ## Purpose
 
-This experiment is the first Nova-Z economy milestone.
+This experiment validates the first Nova-Z economy control primitive across progressively wider layers of the system.
 
-Its purpose is to verify, deterministically and without reinforcement learning or Python policy control, that NovaBW can:
-
-OpenBW game state → select a completed Zerg Drone → select a mineral field → issue Gather → observe an actual increase in owned minerals
-
-The success criterion is an in-game state change, not merely successful command submission.
+The success criterion is always an actual in-game state change, not merely successful command submission.
 
 ## Environment
 
 - Backend: OpenBW / BWAPI
 - Test harness: StardustDevEnvironment `BWTest`
-- Test: `NovaBW.ZergGatherDeterministic`
 - Player race: Zerg
 - Opponent race: Terran
 - Map: `maps/sscai/(4)Python.scx`
 - Random seed: 12345
-- Frame limit: 3,000
-- Time limit: 60 seconds
 - Runtime: accelerated headless execution
-- Python policy: not used
-- Reinforcement learning: not used
-
-The OpenBW test executable was run from the directory containing the required legacy StarCraft MPQ assets.
 
 ## Milestone 1: direct BWAPI Gather validation
 
-The deterministic test module:
+Test: `NovaBW.ZergGatherDeterministic`
 
-1. Finds one existing, completed `Zerg_Drone`.
+The test:
+
+1. Finds one completed `Zerg_Drone`.
 2. Finds a nearby mineral field.
 3. Records `self()->minerals()` and `self()->gatheredMinerals()`.
-4. Issues exactly one `Drone::gather(mineral)` command.
-5. Waits for an actual mineral return.
-6. Passes only if owned mineral count increases.
-7. Also verifies cumulative gathered minerals increased.
+4. Issues one `Drone::gather(mineral)`.
+5. Passes only if owned mineral count increases.
 
 Observed result:
 
@@ -45,71 +34,102 @@ Observed result:
 - Drone position: (3856, 1376)
 - Mineral field ID: 74
 - Mineral position: (4000, 1328)
-- Gather command issued: frame 0
-- Starting minerals: 50
-- Ending minerals: 58
-- Starting gathered minerals: 50
-- Ending gathered minerals: 58
-- Mineral delta: +8
+- Gather issued: frame 0
+- Minerals: 50 → 58
+- Gathered minerals: 50 → 58
+- Delta: +8
 - First verified increase: frame 162
-- `NovaBW.ZergGatherDeterministic`: PASS
+- Result: PASS
 
-This proves the intended game-state transition directly through BWAPI.
+## Milestone 2: common protocol + OpenBWAdapter
 
-## Milestone 2: common protocol and OpenBWAdapter Gather validation
+Test: `NovaBW.ZergGatherThroughAdapter`
 
 The common protocol was extended with:
 
 - `Observation.resourceUnits`
-- resource-unit ID, type, position, remaining resources, mineral/geyser flags
+- resource-unit ID, type, position and remaining resources
+- mineral/geyser flags
 - `ActionType::Gather`
 - `Action.targetUnitId`
 
-`OpenBWAdapter::observe()` now exposes accessible mineral fields and geysers as common resource observations.
+`OpenBWAdapter::observe()` exposes resource units.
 
-`OpenBWAdapter::execute()` now supports the first constrained Gather action:
+`OpenBWAdapter::execute()` accepts a common Gather action, validates a completed worker and mineral-field target, and issues BWAPI Gather.
 
-common actor unit ID + common target unit ID → validate completed worker and mineral field → BWAPI `gather()`
-
-A second deterministic regression test, `NovaBW.ZergGatherThroughAdapter`, was added. It deliberately chooses the Drone and mineral from the common Observation, constructs a common Gather Action, executes it through `OpenBWAdapter`, and passes only after the observed player mineral count increases.
+The test selects the Drone and mineral from the common Observation, constructs a common Gather Action, executes through `OpenBWAdapter`, and passes only after mineral stockpile increases.
 
 Result:
 
-- `NovaBW.ZergGatherThroughAdapter`: PASS
-- resource observation path validated
-- common Gather action path validated
-- OpenBWAdapter execution path validated
-- actual mineral-income state change validated
-- PythonBridge still not involved
+- resource observation path: PASS
+- common Gather action path: PASS
+- OpenBWAdapter execution: PASS
+- actual mineral-income state change: PASS
+
+## Milestone 3: PythonBridge end-to-end Gather
+
+Test: `NovaBW.PythonGatherIntegration`
+
+`PythonBridge` was extended to serialize `resourceUnits` and parse:
+
+- `actionType = "Gather"`
+- `unitId`
+- `targetUnitId`
+
+A dedicated deterministic Python server, `python/gather_test_server.py`, receives the common Observation, selects a completed worker and nearby mineral field, and sends exactly one Gather action. Later observations return None so the original Gather command is not overwritten.
+
+Observed Python-side behavior included:
+
+- observation received at frame 0
+- minerals = 50
+- own units = 9
+- resource units serialized successfully
+- Drone and mineral selected in Python
+- `Gather(unitId, targetUnitId)` sent back to C++
+
+The C++ integration test completed successfully:
+
+- `NovaBW.PythonGatherIntegration`: PASS
+- 1 test run
+- 1 test passed
+- runtime approximately 1.1 seconds
+
+This validates the complete path:
+
+OpenBW
+→ common Observation
+→ PythonBridge
+→ Python policy layer
+→ common Gather Action
+→ PythonBridge
+→ OpenBWAdapter
+→ BWAPI
+→ actual mineral collection
 
 ## Interpretation
 
-Nova-Z now has two independent levels of deterministic Gather evidence:
+Nova-Z now has deterministic Gather evidence at three layers:
 
-1. Direct BWAPI control proves the game runtime can execute Gather and produce mineral income.
-2. The common NovaBW protocol plus OpenBWAdapter proves the runtime-independent Observation/Action abstraction can represent and execute the same behavior.
+1. direct BWAPI control
+2. common protocol + OpenBWAdapter
+3. full C++ ↔ Python policy loop
 
-The milestone does not rely on:
-
-- a successful `gather()` return value alone
-- worker order-state heuristics
-- PythonBridge
-- PPO
-- reward shaping
+The milestone does not rely on PPO, reward shaping, worker-order heuristics, or command-return values alone.
 
 ## Conclusion
 
-Nova-Z deterministic Gather and OpenBWAdapter Gather validation are complete.
+Nova-Z Gather is complete as a deterministic end-to-end control primitive.
 
-Next implementation target:
+Next curriculum target:
 
-1. Extend PythonBridge observation serialization with player resources and resource units.
-2. Extend PythonBridge action parsing with `Gather` and `targetUnitId`.
-3. Add a deterministic PythonBridge Gather integration test.
-4. Verify the same end-to-end path:
-   OpenBW observation → C++ bridge → Python → common Gather action → C++ adapter → actual mineral increase.
-5. Only after that validation, introduce learning for worker gathering/economy control.
+Drone production.
 
-Project rule remains:
+Implementation order:
 
-deterministic game-state validation first → protocol exposure second → learning integration last.
+1. verify exact BWAPI/OpenBW Zerg production API
+2. deterministic C++ production test
+3. verify an actual new Drone appears
+4. add common Train/Morph action representation
+5. validate through OpenBWAdapter
+6. expose through PythonBridge
+7. only then connect to a learning policy
