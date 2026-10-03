@@ -771,3 +771,25 @@ Next phase:
 2. keep the deterministic controller as a regression/reference policy
 3. begin replacing selected rule decisions with learned policy components rather than replacing the entire controller at once
 4. introduce evaluation against fixed scenarios and historical policy checkpoints before broader self-play
+
+
+## Milestone: autonomous Nova-Z multi-seed robustness
+
+Evaluation: `PythonNovaZAutonomousBaseline` on a fixed map across 10 deterministic random seeds.
+
+Result:
+
+- PASS: 10/10 (100%)
+- Spawning Pool completed: 10/10 (100%)
+- enemy observed: 10/10 (100%)
+- actual enemy damage observed: 10/10 (100%)
+- mean maximum completed Drones: 5.00
+- mean maximum completed Zerglings: 4.00
+- mean game length: 12,912.3 frames
+- CSV: `runs/nova_z_baseline_multiseed.csv`
+
+This establishes the current rule-based autonomous Nova-Z controller as a stable fixed-map baseline across the selected seed set.
+
+The baseline is now suitable for use as a regression/reference policy.
+
+Next evaluation axis: multi-map robustness. The same policy should be tested without map-specific policy logic, using the common Observation/Action interface and map-derived start locations/build candidates.
