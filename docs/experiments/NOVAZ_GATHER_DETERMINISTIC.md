@@ -793,3 +793,42 @@ This establishes the current rule-based autonomous Nova-Z controller as a stable
 The baseline is now suitable for use as a regression/reference policy.
 
 Next evaluation axis: multi-map robustness. The same policy should be tested without map-specific policy logic, using the common Observation/Action interface and map-derived start locations/build candidates.
+
+
+## Milestone: autonomous Nova-Z multi-map robustness
+
+Evaluation: `PythonNovaZAutonomousBaseline` across six maps and all configured starting-location seeds.
+
+Maps:
+
+- Benzene: 2/2
+- Destination: 2/2
+- Neo Moon Glaive: 3/3
+- Fighting Spirit: 4/4
+- Circuit Breaker: 4/4
+- Python: 4/4
+
+Aggregate result:
+
+- PASS: 19/19 (100%)
+- Spawning Pool completed: 19/19 (100%)
+- enemy observed: 19/19 (100%)
+- actual enemy damage observed: 19/19 (100%)
+- CSV: `runs/nova_z_baseline_multimap.csv`
+
+This validates the current deterministic Nova-Z baseline across multiple map sizes, geometries, and starting positions without map-name-specific policy logic.
+
+The baseline is now considered a stable multi-map regression/reference policy.
+
+Next milestone: `Nova-Z Full Game v0`.
+
+Goal:
+
+- continue economy after first contact
+- keep producing Drones / Overlords / Zerglings
+- repeatedly scout and attack
+- recover after unit losses
+- destroy all enemy units/buildings necessary for the game to end
+- verify an actual win result rather than stopping at first damage
+
+This is the transition from autonomous mini-game behavior to complete-game play.
