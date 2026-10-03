@@ -832,3 +832,40 @@ Goal:
 - verify an actual win result rather than stopping at first damage
 
 This is the transition from autonomous mini-game behavior to complete-game play.
+
+
+## Milestone: Nova-Z Full Game v0 — first verified victory
+
+Test: `NovaBW.PythonNovaZFullGameV0`
+
+The success criterion was raised from first verified enemy damage to an actual StarCraft game victory.
+
+The existing stable autonomous Nova-Z baseline was reused without introducing a new gameplay policy. The opponent was intentionally passive so this test isolates the complete game lifecycle before introducing active-opponent difficulty.
+
+Observed result:
+
+- actual game result: `won=1`
+- game ended naturally at approximately 7,908 frames
+- Gather actions: 6
+- Build actions: 1
+- Morph actions: 5
+- Move actions: 14
+- Attack actions: 66
+- Spawning Pool completed
+- maximum completed Drones: 5
+- maximum completed Zerglings: 4
+- BWAPI supplyTotal: 18 → 34
+- enemy observed
+- actual enemy damage observed
+- `NovaBW.PythonNovaZFullGameV0`: PASS
+- runtime approximately 12.9 seconds
+
+This is the first verified complete-game victory by Nova-Z through the common Observation/Action architecture.
+
+Interpretation:
+
+This milestone proves lifecycle completeness — economy, tech, production, scouting, combat, and game termination — but does not yet measure competitive strength because the Terran opponent is passive.
+
+Next milestone:
+
+Evaluate actual win rate across the previously validated multi-map / all-start-location suite, then add loss recovery and continuous production before introducing an active scripted opponent.
