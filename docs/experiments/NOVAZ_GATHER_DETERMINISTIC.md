@@ -643,3 +643,32 @@ Python policy → resource collection → prerequisite construction → prerequi
 Note: the PASS log was emitted on several final frames because the test printed success whenever the already-satisfied condition was re-observed. This is harmless test-log duplication and should be guarded to print only once in a future cleanup.
 
 Next curriculum target: enemy observation and Attack, with success defined by an actual enemy hit-point reduction or unit death.
+
+
+## Follow-on milestone: scouting and Attack through common Observation + OpenBWAdapter
+
+Test: `NovaBW.ZergScoutAndAttackThroughAdapter`
+
+The common Observation was extended with visible enemy units, and the common action protocol was extended with `Attack`.
+
+The test uses one starting Drone as a scout, visits the map's possible start locations through common Move actions, waits until an enemy becomes visible through the common `enemyUnits` observation, then issues a common Attack action and passes only after actual enemy health decreases.
+
+Observed result:
+
+- scout unit ID: 111
+- possible scout targets: 3
+- 13 Move actions accepted
+- visible enemy first selected at frame 3054
+- target unit ID: 113
+- target starting health: 1500
+- Attack accepted
+- actual enemy health: 1500 → 1496
+- damage observed at frame 3130
+- `NovaBW.ZergScoutAndAttackThroughAdapter`: PASS
+- runtime approximately 6.1 seconds
+
+This validates the first combat state transition through the runtime-independent common protocol:
+
+common Move → fog-respecting visible enemy observation → common Attack → OpenBWAdapter → actual enemy damage.
+
+Next bundled target: Python-controlled combat using produced Zerglings: Gather → Build Spawning Pool → Morph Zerglings → scout/search → Attack visible enemy → verify actual damage.
