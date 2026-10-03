@@ -600,3 +600,46 @@ This validates the first full Zerg tech sequence entirely through the NovaBW com
 Gather → Build prerequisite tech → wait for completion → explicit Larva Morph → combat-unit production.
 
 Next target: expose Build through PythonBridge. Before giving Python spatial Build control, add runtime-independent build-location candidates to the common Observation so the Python policy does not depend on BWAPI/OpenBW-specific build-location APIs.
+
+
+## Follow-on milestone: Python-controlled Pool-to-Zergling tech path
+
+Test: `NovaBW.PythonPoolToZerglingIntegration`
+
+The common observation/action interface was extended with:
+
+- build candidates for currently valid construction targets
+- morph options that act as an initial action mask
+- PythonBridge parsing for `Build`
+- `targetTileX` / `targetTileY`
+
+The Python controller then completed the entire first tech-production objective:
+
+1. issue Gather to four starting workers
+2. accumulate minerals
+3. select a valid common Build candidate
+4. issue Build(Spawning Pool)
+5. wait for the Pool to appear and complete
+6. observe a valid combat morph option only after prerequisites are satisfied
+7. issue Morph(Zergling) on a specific Larva
+8. verify completed Zergling count increases
+
+Final integration result:
+
+- Gather executed for 4 workers
+- Build action received and executed
+- Spawning Pool observed and completed
+- Morph action received and executed
+- completed Zerglings: 0 → 2
+- final PASS observed near frame 5994
+- `NovaBW.PythonPoolToZerglingIntegration`: PASS
+- 1 test run, 1 test passed
+- runtime approximately 9.5 seconds
+
+This validates the first Python-controlled Nova-Z tech path:
+
+Python policy → resource collection → prerequisite construction → prerequisite waiting → explicit Larva morph → combat-unit production.
+
+Note: the PASS log was emitted on several final frames because the test printed success whenever the already-satisfied condition was re-observed. This is harmless test-log duplication and should be guarded to print only once in a future cleanup.
+
+Next curriculum target: enemy observation and Attack, with success defined by an actual enemy hit-point reduction or unit death.
