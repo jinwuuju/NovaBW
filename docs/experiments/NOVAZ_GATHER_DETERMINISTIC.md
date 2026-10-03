@@ -719,3 +719,55 @@ Next phase:
 2. verify longer-horizon game progress and win/loss behavior
 3. preserve this controller as a regression baseline
 4. then begin replacing rule decisions with learned policy components
+
+
+## Milestone: first autonomous Nova-Z baseline
+
+Test: `NovaBW.PythonNovaZAutonomousBaseline`
+
+The deterministic Python controller was upgraded from a one-shot scenario script into a longer-horizon autonomous Nova-Z baseline.
+
+The controller continuously manages:
+
+- worker mineral gathering
+- Spawning Pool construction
+- worker replenishment
+- supply expansion through Overlord morphing
+- Zergling production
+- scouting
+- visible-enemy targeting
+- repeated Attack commands
+
+A builder-reservation bug was discovered during the first autonomous run: the Drone assigned to construct the Spawning Pool could later receive a Gather command before the Pool appeared, overwriting the Build order. The controller was fixed by reserving the builder until construction starts, with a timeout/retry path for failed starts.
+
+The combat regression logic was also hardened so repeated Attack commands do not overwrite the initial target-health baseline used to verify real damage.
+
+Final successful result:
+
+- Gather actions executed: 6
+- Build actions executed: 1
+- Morph actions executed: 5
+- Move actions executed: 14
+- Attack actions executed: 65
+- Spawning Pool completed: yes
+- maximum completed Drones: 5
+- maximum completed Zerglings: 4
+- BWAPI supplyTotal: 18 → 34
+- enemy observed: yes
+- actual enemy damage observed: yes
+- game ended after approximately 7,877 frames
+- `NovaBW.PythonNovaZAutonomousBaseline`: PASS
+- runtime approximately 13.2 seconds
+
+This marks the transition from low-level action validation to an autonomous rule-based Nova-Z gameplay baseline.
+
+The validated runtime-independent control stack now covers:
+
+Observation → Python policy → Gather / Move / Build / Morph / Attack → OpenBWAdapter → actual game-state changes.
+
+Next phase:
+
+1. run the full NovaBW regression suite and preserve the baseline
+2. keep the deterministic controller as a regression/reference policy
+3. begin replacing selected rule decisions with learned policy components rather than replacing the entire controller at once
+4. introduce evaluation against fixed scenarios and historical policy checkpoints before broader self-play
