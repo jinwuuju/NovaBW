@@ -159,7 +159,7 @@ public:
                 state->passPrinted = true;
 
                 std::cout
-                    << "[NOVA-Z][SPIRE][PASS]"
+                    << "[NOVA-Z][SPIRE][PASS-NO-LEAVE-v2]"
                     << " mode="
                     << (throughAdapter ? "adapter" : "direct")
                     << " frame="
