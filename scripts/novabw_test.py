@@ -73,12 +73,20 @@ def hydra():
         "NovaBW.PythonHydraResearchIntegration",
     )
 
+def spire_air():
+    gtest("NovaBW.ZergSpireAirDeterministic")
+    gtest("NovaBW.ZergSpireAirThroughAdapter")
+    python_test(
+        "python/spire_air_test_server.py",
+        "NovaBW.PythonSpireAirIntegration",
+    )
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "suite",
     nargs="?",
     default="core",
-    choices=["core", "gas-lair", "hydra"],
+    choices=["core", "gas-lair", "hydra", "spire-air"],
 )
 parser.add_argument(
     "--no-build",
@@ -98,6 +106,9 @@ if args.suite in ("core", "gas-lair"):
 
 if args.suite in ("core", "hydra"):
     hydra()
+
+if args.suite in ("core", "spire-air"):
+    spire_air()
 
 print("\n======================================")
 print(" NOVABW REGRESSION PASSED:", args.suite)
