@@ -165,8 +165,6 @@ public:
                     << " frame="
                     << BWAPI::Broodwar->getFrameCount()
                     << std::endl;
-
-                BWAPI::Broodwar->leaveGame();
             }
 
             return;
@@ -1011,7 +1009,6 @@ public:
             state->flyerUpgradeCompleted
         )
         {
-            BWAPI::Broodwar->leaveGame();
             return;
         }
 
