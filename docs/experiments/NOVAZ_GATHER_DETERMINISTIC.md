@@ -1008,3 +1008,41 @@ Next phase: complete the Zerg control surface.
 Immediate capability bundle:
 
 Extractor construction -> gas gathering -> verified gas increase -> Hatchery-to-Lair morph -> verified Lair completion.
+
+
+## Phase 2 milestone: deterministic Gas -> Lair tech chain
+
+Test: `NovaBW.ZergGasToLairDeterministic`
+
+This is the first broader Zerg-tech capability bundle after freezing Full Game v0.
+
+Verified sequence:
+
+1. accumulate minerals with starting Drones
+2. build Spawning Pool
+3. build Extractor on a real Vespene Geyser
+4. wait for Extractor completion
+5. assign a completed Drone to gather gas
+6. verify owned gas actually increases
+7. morph the completed Hatchery into a Lair
+8. verify completed Lair
+
+Observed result:
+
+- starting minerals: 50
+- starting gas: 0
+- Spawning Pool Build accepted at frame 2044
+- Extractor Build accepted at frame 2115
+- gas Gather accepted at frame 2818
+- gas first increased 0 -> 8 at frame 2954
+- Hatchery -> Lair Morph accepted at frame 4303
+- Lair completed at frame 5815
+- final gas observed: 548
+- `NovaBW.ZergGasToLairDeterministic`: PASS
+- runtime approximately 2.2 seconds
+
+This validates the first Phase 2 tech chain beyond the Pool/Zergling vertical slice.
+
+Next step:
+
+Expose Extractor build candidates, refinery gas gathering, and Hatchery-to-Lair morph options through the backend-independent common protocol and PythonBridge, then validate the entire Gas -> Lair chain under Python control.
