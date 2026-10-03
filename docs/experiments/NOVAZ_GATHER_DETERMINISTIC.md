@@ -1185,3 +1185,37 @@ Lurker path:
 Hydralisk Den -> Lair -> Lurker Aspect research -> Hydralisk -> Lurker
 
 Then continue with Hive/Defiler and Ultralisk tech paths.
+
+
+## Phase 2 milestone: Lurker v1 complete
+
+The Lurker tech bundle passed end-to-end after the capability-registry migration.
+
+Validated chain:
+
+- Spawning Pool
+- Extractor
+- gas gathering
+- Hatchery -> Lair
+- Hydralisk Den
+- Lurker Aspect research
+- Hydralisk production
+- Hydralisk -> Lurker morph
+- completed Lurker observed
+
+Validation layers:
+
+- direct BWAPI scenario: PASS
+- common Adapter scenario: PASS
+- Python semantic integration: PASS
+
+This milestone reused the generic Capability Registry / Scenario Harness architecture.
+
+New declarative capabilities:
+
+- Research: `lurker_aspect`
+- Morph: `zerg_lurker`
+
+No Lurker-specific PythonBridge action plumbing was required.
+
+From this milestone onward, local implementation/debug/build/test work should move primarily to Codex using the repository-root `AGENTS.md`. Architectural planning, RL/self-play design, research decisions, and experiment interpretation remain in the NovaBW ChatGPT project.
