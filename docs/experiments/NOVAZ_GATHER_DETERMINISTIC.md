@@ -337,3 +337,44 @@ This is Nova-Z's first validated Python-controlled multi-step economy objective:
 Python policy → Gather multiple workers → wait on resource state → Train supply provider → verify actual supply expansion.
 
 Next curriculum target: explicit Larva management.
+
+
+## Follow-on milestone: Python-controlled Overlord supply management
+
+Test: `NovaBW.PythonOverlordSupplyIntegration`
+
+The common unit observation was extended with semantic production fields:
+
+- `supplyProvider`
+- `producesLarva`
+
+The deterministic Python controller performed the whole supply objective:
+
+1. identify four completed workers from the common Observation
+2. send one common Gather action for each worker
+3. observe mineral stockpile increasing over time
+4. wait until minerals reached at least 100
+5. identify a larva-producing structure from `producesLarva`
+6. infer the Overlord unit type from the observed non-building supply provider
+7. send `Train(Overlord)`
+8. observe the production cost
+9. verify actual supply expansion
+
+Observed behavior:
+
+- initial state: minerals 50, supply 8/18
+- four worker Gather actions issued from Python
+- mineral stockpile increased through repeated worker returns
+- frame 384: minerals 106
+- Python issued Train Overlord
+- after the command: minerals 6
+- frame 1024: supply changed from 8/18 to 8/34
+- final test: `NovaBW.PythonOverlordSupplyIntegration` PASS
+- 1 test run, 1 test passed
+- runtime approximately 1.1 seconds
+
+This is the first validated Python-controlled multi-step economy objective in Nova-Z:
+
+Python policy → multiple Gather actions → resource-state waiting → Train supply provider → actual supply expansion.
+
+Next curriculum target: explicit Larva management.
