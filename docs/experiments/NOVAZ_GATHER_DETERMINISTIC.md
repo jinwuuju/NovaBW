@@ -288,3 +288,52 @@ This is the first validated multi-action economy sequence entirely through the c
 common Gather × workers → resource accumulation → common Train(Overlord) → actual supply expansion.
 
 Next step: move this short supply-management sequence into the Python policy layer and validate it end-to-end through PythonBridge.
+
+
+## Follow-on milestone: Python-controlled Overlord supply sequence
+
+Test: `NovaBW.PythonOverlordSupplyIntegration`
+
+The common unit observation was extended with semantic production fields:
+
+- `supplyProvider`
+- `producesLarva`
+
+These allow Python policy code to identify Zerg production structures and existing supply providers without hardcoding BWAPI unit type IDs.
+
+A deterministic Python supply controller then performed the full sequence:
+
+1. observe the starting Zerg economy
+2. issue one Gather action to each of the 4 completed Drones
+3. wait while minerals accumulate
+4. detect minerals >= 100
+5. identify a larva-producing structure from `producesLarva`
+6. infer the Overlord unit type from the observed non-building supply provider
+7. send `Train(Overlord)`
+8. verify the resulting supply expansion
+
+Observed Python-side behavior:
+
+- frame 0: minerals 50, supply 8/18
+- four Gather actions issued to four distinct workers
+- minerals rose over time: 50 → 58 → 66 → ... → 106
+- Overlord Train issued from Python at frame 384 with minerals 106
+- minerals dropped to 6 after the production cost was applied
+- supply remained 8/18 during morphing
+- supply changed to 8/34 at frame 1024
+
+Final integration result:
+
+- `NovaBW.PythonOverlordSupplyIntegration`: PASS
+- Gather actions received and executed
+- Train action received and executed
+- completed Overlord increase observed
+- supply increase observed
+- 1 test run, 1 test passed
+- runtime approximately 1.1 seconds
+
+This is Nova-Z's first validated Python-controlled multi-step economy objective:
+
+Python policy → Gather multiple workers → wait on resource state → Train supply provider → verify actual supply expansion.
+
+Next curriculum target: explicit Larva management.
