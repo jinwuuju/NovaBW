@@ -869,3 +869,36 @@ This milestone proves lifecycle completeness — economy, tech, production, scou
 Next milestone:
 
 Evaluate actual win rate across the previously validated multi-map / all-start-location suite, then add loss recovery and continuous production before introducing an active scripted opponent.
+
+
+## Full Game v0 hardening: continuous combat production
+
+A full-game failure on Benzene exposed a structural limitation in the first autonomous baseline: combat production stopped permanently after two Zergling morphs (four Zerglings total).
+
+The Full Game v0 controller was split from the stable first-damage regression policy and changed to continuously produce Zerglings while resources, Larva, and supply permit.
+
+Re-test:
+
+- map: Benzene
+- seed: 1617
+- actual game result: won=1
+- Gather actions: 6
+- Build actions: 1
+- Morph actions: 21
+- Move actions: 14
+- Attack actions: 217
+- Spawning Pool completed
+- maximum completed Drones: 5
+- maximum completed Zerglings: 16
+- BWAPI supplyTotal: 18 -> 34
+- enemy observed
+- actual damage observed
+- game ended naturally at approximately 7,846 frames
+- `NovaBW.PythonNovaZFullGameV0`: PASS
+- runtime approximately 10.9 seconds
+
+This demonstrates that continuous combat-unit replenishment is required for complete-game reliability and should remain separate from the frozen first-damage regression baseline.
+
+Known infrastructure issue:
+
+After the opponent game had already ended, the opponent child process emitted a SIGSEGV during OpenBW/ASIO teardown. The primary test process still completed with `won=1` and PASS. Treat this as teardown/infrastructure debt to isolate separately; do not conflate it with gameplay correctness.
