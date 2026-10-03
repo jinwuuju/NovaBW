@@ -412,3 +412,41 @@ Observed result:
 This proves Nova-Z can explicitly control an individual Larva rather than delegating Larva selection to Hatchery-level Train.
 
 Next step: add explicit Larva observation and a common `Morph` action, then validate the same state transition through `OpenBWAdapter`.
+
+
+## Follow-on milestone: explicit Larva morph through common Observation + OpenBWAdapter
+
+Test: `NovaBW.ZergLarvaMorphThroughAdapter`
+
+The common unit observation now exposes:
+
+- `larva`
+- `parentUnitId`
+
+The common action protocol now includes:
+
+- `ActionType::Morph`
+- `unitId` as the specific Larva actor
+- `unitTypeId` as the requested morph target
+
+The adapter test selects a Larva entirely from the common Observation, verifies its parent production structure, issues a common Morph action, and passes only after the completed Drone count increases.
+
+Observed result:
+
+- selected Larva ID: 116
+- parent unit ID: 90
+- initial Larva count: 3
+- starting completed Drones: 4
+- starting minerals: 50
+- common Morph accepted at frame 0
+- completed Drones: 4 → 5
+- minerals: 50 → 0
+- completion observed at frame 337
+- `NovaBW.ZergLarvaMorphThroughAdapter`: PASS
+- runtime approximately 0.9 seconds
+
+This validates explicit Larva control through the runtime-independent NovaBW abstraction:
+
+common Observation → specific Larva ID → common Morph(Drone) → OpenBWAdapter → BWAPI → actual Drone completion.
+
+Next bundled target: expose Larva/Morph through PythonBridge and extend the same production path to Zergling.
