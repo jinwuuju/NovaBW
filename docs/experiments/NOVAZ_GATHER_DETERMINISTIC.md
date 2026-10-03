@@ -1141,3 +1141,47 @@ Final targeted Python regression:
 Next engineering step:
 
 Before adding more Zerg tech trees, introduce a reusable Capability Registry and Scenario Harness so new Build/Morph/Research/Upgrade capabilities can be added declaratively rather than through repeated regex/source patching.
+
+
+## Phase 2 milestone: Spire Air v2 complete
+
+The first capability bundle implemented on top of the new Capability Registry and Scenario Harness has passed end-to-end.
+
+Validated capabilities:
+
+- Spawning Pool
+- Extractor
+- gas gathering
+- Hatchery -> Lair
+- Spire construction
+- Mutalisk morph/production
+- Scourge morph/production
+- Zerg Flyer Attacks upgrade
+
+Validation layers:
+
+- `NovaBW.ZergSpireAirDeterministic`: PASS
+- `NovaBW.ZergSpireAirThroughAdapter`: PASS
+- `NovaBW.PythonSpireAirIntegration`: PASS
+
+Final result:
+
+`NOVA-Z SPIRE AIR v2: ALL TESTS PASSED`
+
+This milestone also validates the new development architecture:
+
+- new Zerg capabilities were added declaratively through `CapabilityRegistry.h`
+- existing generic Build/Morph/Upgrade execution paths were reused
+- PythonBridge required no new per-capability action plumbing
+- Scenario Harness was used by the adapter-side tests
+- the Spire bundle did not require new per-capability logic in OpenBWAdapter execution
+- pinned-source installer and binary marker verification prevented stale test code from being executed
+
+A test-infrastructure issue was also isolated: an earlier manual `leaveGame()` path triggered the known OpenBW/ASIO teardown failure. The corrected v2 test uses the normal BWTest lifecycle and passes.
+
+Next recommended Zerg tech bundle:
+
+Lurker path:
+Hydralisk Den -> Lair -> Lurker Aspect research -> Hydralisk -> Lurker
+
+Then continue with Hive/Defiler and Ultralisk tech paths.
