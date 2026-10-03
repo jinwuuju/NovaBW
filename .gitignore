@@ -1,0 +1,34 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Build outputs
+build/
+cmake-build-*/
+
+# Game data / proprietary archives
+*.mpq
+*.MPQ
+
+# Model checkpoints
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+
+# Replay corpora and generated trajectories
+replays/raw/
+replays/trajectories/
+datasets/generated/
+datasets/cache/
+
+# Logs / profiling
+*.log
+logs/
+runs/
+wandb/
+
+# Local environment
+.env
+.env.*
