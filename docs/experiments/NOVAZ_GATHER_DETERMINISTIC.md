@@ -672,3 +672,50 @@ This validates the first combat state transition through the runtime-independent
 common Move → fog-respecting visible enemy observation → common Attack → OpenBWAdapter → actual enemy damage.
 
 Next bundled target: Python-controlled combat using produced Zerglings: Gather → Build Spawning Pool → Morph Zerglings → scout/search → Attack visible enemy → verify actual damage.
+
+
+## Follow-on milestone: Python-controlled Zergling combat integration
+
+Test: `NovaBW.PythonZerglingCombatIntegration`
+
+This milestone combines the previously validated economy, tech, production, scouting, enemy observation, and combat primitives into one Python-controlled scenario.
+
+Sequence:
+
+1. Python issues Gather to the four starting Drones
+2. Python selects and executes a valid Spawning Pool build candidate
+3. Python waits for prerequisite completion
+4. Python selects an executable Larva combat morph option and produces Zerglings
+5. Python scouts the map's possible start locations with a completed Zergling
+6. visible enemies are exposed through the fog-respecting common `enemyUnits` observation
+7. Python issues common Attack actions against a visible enemy
+8. the test passes only after actual enemy health decreases
+
+Observed result:
+
+- Gather executed for 4 workers
+- Spawning Pool Build executed
+- Pool completion observed
+- Zergling Morph executed
+- completed Zerglings observed
+- 13 scouting Move actions executed
+- visible enemy acquired
+- Attack issued by two Zerglings
+- target unit ID: 132
+- target health: 1500 → 1496
+- damage observed at frame 5741
+- `NovaBW.PythonZerglingCombatIntegration`: PASS
+- runtime approximately 9.4 seconds
+
+This is the first complete Nova-Z Python policy loop that spans:
+
+resource collection → tech construction → combat-unit production → map search → enemy observation → combat → verified damage.
+
+The core low-level control stack is now sufficiently validated to shift emphasis away from one-primitive-at-a-time tests and toward an autonomous rule-based mini-game controller and then learning.
+
+Next phase:
+
+1. build a deterministic autonomous Nova-Z baseline that continuously gathers, manages supply, produces workers/combat units, scouts, and attacks
+2. verify longer-horizon game progress and win/loss behavior
+3. preserve this controller as a regression baseline
+4. then begin replacing rule decisions with learned policy components
