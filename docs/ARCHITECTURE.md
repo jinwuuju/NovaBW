@@ -58,6 +58,8 @@ strategic policy → tactical/economic intent → primitive game actions
 
 ### Training
 
+NovaBW uses a Zerg-first asymmetric curriculum. The primary policy is trained for ZvT, ZvP, and ZvZ. Terran and Protoss are initially trained only as TvZ and PvZ opponent policies so compute and expert data remain focused on improving Zerg.
+
 Training methods will include:
 
 - supervised behavior cloning
