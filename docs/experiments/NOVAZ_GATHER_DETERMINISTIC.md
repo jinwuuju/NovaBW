@@ -1083,3 +1083,32 @@ This validates the Phase 2 Gas -> Lair capability through the backend-independen
 Next step:
 
 Expose semantic Extractor/refinery observations plus Extractor build candidates and Hatchery-to-Lair morph options through PythonBridge, then validate the same chain under Python policy control without hard-coded BWAPI unit IDs.
+
+
+## Phase 2 milestone: Python-controlled Gas -> Lair complete
+
+Test: `NovaBW.PythonGasToLairIntegration`
+
+The complete Gas -> Lair tech chain now passes through the full NovaBW stack:
+
+OpenBW -> common Observation / semantic candidates -> PythonBridge -> Python policy -> common Action -> OpenBWAdapter -> actual in-game state change.
+
+Validated under Python control:
+
+- semantic non-refinery tech build candidate selected for Spawning Pool
+- semantic refinery build candidate selected for Extractor
+- owned refinery observed without hard-coded BWAPI type IDs in Python policy
+- common Gather issued to completed refinery
+- actual gas increase observed
+- semantic building morph option selected for Hatchery -> Lair
+- actual Lair completion observed
+- `NovaBW.PythonGasToLairIntegration`: PASS
+- runtime approximately 16.3 seconds
+
+Phase 2 Gas & Lair Tech v1 is complete across direct BWAPI, common adapter, and Python integration.
+
+Development workflow change from this milestone onward:
+
+Implement related Zerg capabilities as larger vertical bundles in one pass, while retaining staged automated validation internally. Each bundle should include protocol/action-mask changes, adapter support, PythonBridge support, deterministic/common/Python tests, and a single regression runner that stops at the first failed layer.
+
+Next planned bundle: Hydralisk tech chain plus the initial generic Research/Upgrade framework.
