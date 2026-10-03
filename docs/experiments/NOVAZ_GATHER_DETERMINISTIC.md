@@ -1112,3 +1112,32 @@ Development workflow change from this milestone onward:
 Implement related Zerg capabilities as larger vertical bundles in one pass, while retaining staged automated validation internally. Each bundle should include protocol/action-mask changes, adapter support, PythonBridge support, deterministic/common/Python tests, and a single regression runner that stops at the first failed layer.
 
 Next planned bundle: Hydralisk tech chain plus the initial generic Research/Upgrade framework.
+
+
+## Phase 2 milestone: Hydra & Research v1 complete
+
+The Hydra & Research bundle now passes all three layers:
+
+- `NovaBW.ZergHydraResearchDeterministic`: PASS
+- `NovaBW.ZergHydraResearchThroughAdapter`: PASS
+- `NovaBW.PythonHydraResearchIntegration`: PASS
+
+Validated capabilities:
+
+- Hydralisk Den construction
+- Hydralisk morph/production
+- generic common `Research` action
+- generic common `Upgrade` action
+- Burrowing research
+- Muscular Augments upgrade
+- semantic Python candidate selection without hard-coded BWAPI unit IDs
+- builder reservation / build-materialization retry logic to prevent Gather commands from overwriting accepted Zerg construction orders
+
+The Python integration initially failed after issuing Pool and Extractor because builder workers were not reserved across the construction transition. The targeted fix reserves Pool/Extractor/Den builders until the corresponding building appears, retries only when a build fails to materialize within the timeout, and excludes reserved builders and the gas worker from idle-mineral Gather scheduling.
+
+Final targeted Python regression:
+`NOVA-Z PYTHON HYDRA/RESEARCH: PASSED`
+
+Next engineering step:
+
+Before adding more Zerg tech trees, introduce a reusable Capability Registry and Scenario Harness so new Build/Morph/Research/Upgrade capabilities can be added declaratively rather than through repeated regex/source patching.
