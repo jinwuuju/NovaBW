@@ -554,3 +554,49 @@ This validates the first full Nova-Z tech sequence:
 Gather → accumulate resources → construct prerequisite tech building → wait for completion → explicitly morph Larva → produce combat units.
 
 Next bundled target: add a common `Build` action, permit `Morph(Zergling)`, validate the same scenario through `OpenBWAdapter`, then expose it through PythonBridge.
+
+
+## Follow-on milestone: Pool-to-Zergling through common actions + OpenBWAdapter
+
+Test: `NovaBW.ZergPoolToZerglingThroughAdapter`
+
+The common action protocol now includes:
+
+- `ActionType::Build`
+- `targetTileX`
+- `targetTileY`
+
+The explicit Larva Morph path was expanded to allow `Zerg_Zergling`.
+
+The complete tech scenario was then executed through common actions:
+
+1. common Gather for the 4 starting Drones
+2. wait for sufficient minerals
+3. common Build(Spawning Pool)
+4. verify the Pool appears
+5. wait for Pool completion
+6. common Morph(Zergling) on a specific observed Larva
+7. verify completed Zergling count increases
+
+Observed result:
+
+- Gather accepted for 4 workers
+- common Build issued at frame 1238
+- builder unit ID: 106
+- build tile: (116, 46)
+- minerals at build: 250
+- Build accepted
+- Pool appeared at frame 1317
+- Pool completed at frame 2525
+- Larva ID 39 selected
+- common Morph(Zergling) accepted at frame 2525
+- completed Zerglings: 0 → 2
+- final state change observed at frame 2982
+- `NovaBW.ZergPoolToZerglingThroughAdapter`: PASS
+- runtime approximately 1.4 seconds
+
+This validates the first full Zerg tech sequence entirely through the NovaBW common action layer and OpenBWAdapter:
+
+Gather → Build prerequisite tech → wait for completion → explicit Larva Morph → combat-unit production.
+
+Next target: expose Build through PythonBridge. Before giving Python spatial Build control, add runtime-independent build-location candidates to the common Observation so the Python policy does not depend on BWAPI/OpenBW-specific build-location APIs.
