@@ -486,3 +486,29 @@ This validates the complete explicit Zerg production path:
 OpenBW → common Observation with Larva identity/parent → Python policy selects a specific Larva → common Morph action → PythonBridge → OpenBWAdapter → BWAPI → actual completed Drone increase.
 
 Next bundled target: add building construction for Spawning Pool and then produce Zerglings through the same explicit Larva/Morph path.
+
+
+## Follow-on milestone: PythonBridge explicit Larva morph
+
+Test: `NovaBW.PythonLarvaMorphIntegration`
+
+PythonBridge now serializes Larva identity and parent production structure and parses the common `Morph` action.
+
+Observed result:
+
+- starting completed Drones: 4
+- starting Larvae: 3
+- starting minerals: 50
+- selected Larva ID: 78
+- parent unit ID: 64
+- Python requested `Morph(Drone)` at frame 0
+- Morph executed through OpenBWAdapter
+- completed Drones: 4 → 5
+- minerals: 50 → 0
+- completion observed at frame 337
+- `NovaBW.PythonLarvaMorphIntegration`: PASS
+- runtime approximately 0.9 seconds
+
+This completes explicit Larva selection and Morph control end-to-end through the Python policy layer.
+
+Next scenario target: gather resources → construct Spawning Pool → verify completion → explicitly morph a Larva into Zerglings.
