@@ -154,3 +154,33 @@ Observed result:
 - runtime approximately 0.9 seconds
 
 This establishes the deterministic runtime baseline for Drone production. The next step is to represent production through the common Action protocol and validate the same state transition through `OpenBWAdapter`.
+
+
+## Follow-on milestone: Drone production through common Action + OpenBWAdapter
+
+Test: `NovaBW.ZergDroneProductionThroughAdapter`
+
+The common Action protocol was extended with:
+
+- `ActionType::Train`
+- `Action.unitTypeId`
+
+The initial adapter implementation deliberately constrains Train to completed larva-producing Zerg structures requesting `Zerg_Drone`.
+
+Observed result:
+
+- Hatchery ID: 71
+- starting completed Drone count: 4
+- starting minerals: 50
+- common Train action accepted at frame 0
+- completed Drone count: 4 → 5
+- minerals: 50 → 0
+- production completion observed at frame 337
+- `NovaBW.ZergDroneProductionThroughAdapter`: PASS
+- runtime approximately 0.9 seconds
+
+This validates the path:
+
+common Observation → common Train Action → OpenBWAdapter → BWAPI → actual completed Drone increase.
+
+Next step: expose `Train` and `unitTypeId` through PythonBridge and validate the same production state change end-to-end from Python.
