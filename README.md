@@ -1,6 +1,6 @@
 # NovaBW
 
-NovaBW is a StarCraft: Brood War AI research project focused on:
+NovaBW is a Zerg-first StarCraft: Brood War AI research project focused on:
 
 - OpenBW-based fast simulation
 - C++ runtime adapters
@@ -30,6 +30,7 @@ The initial PPO curriculum has reached a strong learning signal on the 8-directi
 2. Expert human knowledge is treated as curriculum and prior knowledge, not as immutable rules.
 3. Training code, runtime code, strategic knowledge, and datasets remain separate.
 4. Large binary artifacts such as checkpoints and replay corpora should not be committed directly to Git.
+5. Training is Zerg-first: the primary agent learns ZvT, ZvP, and ZvZ; Terran and Protoss initially exist only as TvZ and PvZ training opponents.
 
 ## Planned structure
 
@@ -48,18 +49,18 @@ The initial PPO curriculum has reached a strong learning signal on the 8-directi
 2. Navigation curriculum
 3. Worker gathering and production actions
 4. Build-order imitation learning
-5. One-race full-game policy
-6. PPO self-play
+5. Zerg full-game policy across ZvT, ZvP, and ZvZ
+6. TvZ/PvZ opponent policies and Zerg-focused self-play
 7. League/checkpoint training
 8. Multi-map generalization
-9. Three-race support
+9. Expand Terran and Protoss beyond their Zerg-facing matchups
 10. Private-game Remastered integration
 
 ## Expert knowledge
 
 Professional strategies, build orders, tactical rules, scouting heuristics, and matchup knowledge will first be collected as readable Markdown. They will then be transformed into structured machine-readable strategy records and, where possible, aligned with replay-derived trajectories for imitation learning.
 
-See `strategy/templates/pro_strategy.md` for the authoring format.
+See `strategy/templates/pro_strategy.md` for the authoring format and `docs/ZERG_FIRST_SCOPE.md` for the initial matchup scope.
 
 ## Repository policy
 
