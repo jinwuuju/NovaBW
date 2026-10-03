@@ -512,3 +512,45 @@ Observed result:
 This completes explicit Larva selection and Morph control end-to-end through the Python policy layer.
 
 Next scenario target: gather resources → construct Spawning Pool → verify completion → explicitly morph a Larva into Zerglings.
+
+
+## Follow-on milestone: deterministic Spawning Pool to Zergling scenario
+
+Test: `NovaBW.ZergPoolToZerglingDeterministic`
+
+This is Nova-Z's first deterministic tech-production scenario spanning resource collection, building construction, tech completion, explicit Larva selection, and combat-unit production.
+
+Sequence:
+
+1. send the starting 4 Drones to minerals
+2. accumulate enough minerals for both Spawning Pool and Zergling
+3. find a valid build location
+4. command one Drone to construct a Spawning Pool
+5. verify the Spawning Pool appears
+6. wait for the Spawning Pool to complete
+7. explicitly select one Larva
+8. morph the Larva into Zerglings
+9. pass only after completed Zergling count increases
+
+Observed result:
+
+- Gather accepted for 4 Drones
+- Spawning Pool build issued at frame 1137
+- builder unit ID: 46
+- build tile: (110, 42)
+- minerals at build: 250
+- build command accepted
+- Spawning Pool appeared at frame 1267
+- Spawning Pool completed at frame 2475
+- Larva ID 131 selected
+- Zergling morph accepted at frame 2475
+- completed Zerglings: 0 → 2
+- final state change observed at frame 2932
+- `NovaBW.ZergPoolToZerglingDeterministic`: PASS
+- runtime approximately 1.5 seconds
+
+This validates the first full Nova-Z tech sequence:
+
+Gather → accumulate resources → construct prerequisite tech building → wait for completion → explicitly morph Larva → produce combat units.
+
+Next bundled target: add a common `Build` action, permit `Morph(Zergling)`, validate the same scenario through `OpenBWAdapter`, then expose it through PythonBridge.
