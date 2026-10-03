@@ -255,3 +255,36 @@ This is the first Nova-Z deterministic multi-step economy sequence:
 Gather → accumulate resources → produce supply provider → verify actual supply expansion.
 
 Next step: permit `Zerg_Overlord` through the common Train action and validate the same sequence through `OpenBWAdapter`.
+
+
+## Follow-on milestone: Overlord supply sequence through common Action + OpenBWAdapter
+
+Test: `NovaBW.ZergOverlordSupplyThroughAdapter`
+
+The OpenBWAdapter Train action was expanded to allow `Zerg_Overlord` in addition to `Zerg_Drone`.
+
+The regression test performs the entire sequence through common actions:
+
+1. observe completed workers and resource units through the common Observation
+2. issue common Gather actions through `OpenBWAdapter` for the starting workers
+3. wait until at least 100 minerals are observed
+4. issue common `Train(Zerg_Overlord)`
+5. verify completed Overlord count increases
+6. verify `supplyTotal` increases
+
+Observed result:
+
+- Gather accepted for 4 workers
+- Overlord Train issued at frame 369
+- minerals at Train: 106
+- completed Overlords: 1 → 2
+- BWAPI supplyTotal: 18 → 34
+- state change observed at frame 1006
+- `NovaBW.ZergOverlordSupplyThroughAdapter`: PASS
+- runtime approximately 1.1 seconds
+
+This is the first validated multi-action economy sequence entirely through the common NovaBW protocol and OpenBWAdapter:
+
+common Gather × workers → resource accumulation → common Train(Overlord) → actual supply expansion.
+
+Next step: move this short supply-management sequence into the Python policy layer and validate it end-to-end through PythonBridge.
