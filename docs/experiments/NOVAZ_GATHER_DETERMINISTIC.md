@@ -27,9 +27,9 @@ The success criterion is an in-game state change, not merely successful command 
 
 The OpenBW test executable was run from the directory containing the required legacy StarCraft MPQ assets.
 
-## Deterministic test behavior
+## Milestone 1: direct BWAPI Gather validation
 
-The test module:
+The deterministic test module:
 
 1. Finds one existing, completed `Zerg_Drone`.
 2. Finds a nearby mineral field.
@@ -39,11 +39,7 @@ The test module:
 6. Passes only if owned mineral count increases.
 7. Also verifies cumulative gathered minerals increased.
 
-Existing Probe/Python bridge tests remain separate from this test.
-
-## Observed result
-
-Relevant runtime output:
+Observed result:
 
 - Drone ID: 83
 - Drone position: (3856, 1376)
@@ -56,17 +52,42 @@ Relevant runtime output:
 - Ending gathered minerals: 58
 - Mineral delta: +8
 - First verified increase: frame 162
-
-GoogleTest result:
-
 - `NovaBW.ZergGatherDeterministic`: PASS
-- 1 test run
-- 1 test passed
-- Runtime: approximately 1.1 seconds
+
+This proves the intended game-state transition directly through BWAPI.
+
+## Milestone 2: common protocol and OpenBWAdapter Gather validation
+
+The common protocol was extended with:
+
+- `Observation.resourceUnits`
+- resource-unit ID, type, position, remaining resources, mineral/geyser flags
+- `ActionType::Gather`
+- `Action.targetUnitId`
+
+`OpenBWAdapter::observe()` now exposes accessible mineral fields and geysers as common resource observations.
+
+`OpenBWAdapter::execute()` now supports the first constrained Gather action:
+
+common actor unit ID + common target unit ID → validate completed worker and mineral field → BWAPI `gather()`
+
+A second deterministic regression test, `NovaBW.ZergGatherThroughAdapter`, was added. It deliberately chooses the Drone and mineral from the common Observation, constructs a common Gather Action, executes it through `OpenBWAdapter`, and passes only after the observed player mineral count increases.
+
+Result:
+
+- `NovaBW.ZergGatherThroughAdapter`: PASS
+- resource observation path validated
+- common Gather action path validated
+- OpenBWAdapter execution path validated
+- actual mineral-income state change validated
+- PythonBridge still not involved
 
 ## Interpretation
 
-This proves that the first Nova-Z economy action can cause the intended game-state transition in OpenBW.
+Nova-Z now has two independent levels of deterministic Gather evidence:
+
+1. Direct BWAPI control proves the game runtime can execute Gather and produce mineral income.
+2. The common NovaBW protocol plus OpenBWAdapter proves the runtime-independent Observation/Action abstraction can represent and execute the same behavior.
 
 The milestone does not rely on:
 
@@ -76,20 +97,19 @@ The milestone does not rely on:
 - PPO
 - reward shaping
 
-The evidence is the actual increase in player mineral stockpile from 50 to 58, together with the increase in cumulative gathered minerals.
-
 ## Conclusion
 
-Nova-Z deterministic Gather validation is complete.
+Nova-Z deterministic Gather and OpenBWAdapter Gather validation are complete.
 
 Next implementation target:
 
-1. Add player resource observations such as minerals and gas to the common Observation.
-2. Add neutral/resource unit observations, including mineral fields.
-3. Add `ActionType::Gather` to the common Action protocol.
-4. Implement and validate Gather execution in `OpenBWAdapter`.
-5. Only after deterministic C++ validation, expose the new observation/action fields through PythonBridge.
+1. Extend PythonBridge observation serialization with player resources and resource units.
+2. Extend PythonBridge action parsing with `Gather` and `targetUnitId`.
+3. Add a deterministic PythonBridge Gather integration test.
+4. Verify the same end-to-end path:
+   OpenBW observation → C++ bridge → Python → common Gather action → C++ adapter → actual mineral increase.
+5. Only after that validation, introduce learning for worker gathering/economy control.
 
-This preserves the project rule:
+Project rule remains:
 
 deterministic game-state validation first → protocol exposure second → learning integration last.
