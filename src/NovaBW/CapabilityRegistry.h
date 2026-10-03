@@ -70,6 +70,13 @@ inline const std::vector<BuildCapability> &buildCapabilities()
             BuildPlacement::NearLarvaProducer,
             BWAPI::UnitTypes::Zerg_Spawning_Pool.getID(),
             true
+        },
+        {
+            BWAPI::UnitTypes::Zerg_Spire,
+            "zerg_spire",
+            BuildPlacement::NearLarvaProducer,
+            BWAPI::UnitTypes::Zerg_Lair.getID(),
+            true
         }
     };
 
@@ -84,7 +91,9 @@ inline const std::vector<MorphCapability> &morphCapabilities()
         { BWAPI::UnitTypes::Zerg_Overlord, "zerg_overlord" },
         { BWAPI::UnitTypes::Zerg_Zergling, "zerg_zergling" },
         { BWAPI::UnitTypes::Zerg_Hydralisk, "zerg_hydralisk" },
-        { BWAPI::UnitTypes::Zerg_Lair, "zerg_lair" }
+        { BWAPI::UnitTypes::Zerg_Lair, "zerg_lair" },
+        { BWAPI::UnitTypes::Zerg_Mutalisk, "zerg_mutalisk" },
+        { BWAPI::UnitTypes::Zerg_Scourge, "zerg_scourge" }
     };
 
     return values;
@@ -111,6 +120,10 @@ inline const std::vector<UpgradeCapability> &upgradeCapabilities()
         {
             BWAPI::UpgradeTypes::Grooved_Spines,
             "grooved_spines"
+        },
+        {
+            BWAPI::UpgradeTypes::Zerg_Flyer_Attacks,
+            "zerg_flyer_attacks"
         }
     };
 
