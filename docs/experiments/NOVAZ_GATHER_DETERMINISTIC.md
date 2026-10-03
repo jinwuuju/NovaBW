@@ -378,3 +378,37 @@ This is the first validated Python-controlled multi-step economy objective in No
 Python policy → multiple Gather actions → resource-state waiting → Train supply provider → actual supply expansion.
 
 Next curriculum target: explicit Larva management.
+
+
+## Follow-on milestone: explicit Larva morph control
+
+Test: `NovaBW.ZergLarvaMorphDeterministic`
+
+This milestone removes the previous dependency on Hatchery-level automatic Larva selection.
+
+The deterministic test:
+
+1. finds the completed starting Hatchery
+2. obtains its current Larva set
+3. selects one specific Larva by unit ID
+4. records completed Drone count and minerals
+5. calls `larva->morph(Zerg_Drone)`
+6. passes only after completed Drone count actually increases
+
+Observed result:
+
+- Hatchery ID: 52
+- selected Larva ID: 112
+- initial Larva count: 3
+- starting completed Drones: 4
+- starting minerals: 50
+- Morph accepted at frame 0
+- completed Drones: 4 → 5
+- minerals: 50 → 0
+- completion observed at frame 337
+- `NovaBW.ZergLarvaMorphDeterministic`: PASS
+- runtime approximately 0.9 seconds
+
+This proves Nova-Z can explicitly control an individual Larva rather than delegating Larva selection to Hatchery-level Train.
+
+Next step: add explicit Larva observation and a common `Morph` action, then validate the same state transition through `OpenBWAdapter`.
