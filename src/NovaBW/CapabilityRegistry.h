@@ -93,7 +93,8 @@ inline const std::vector<MorphCapability> &morphCapabilities()
         { BWAPI::UnitTypes::Zerg_Hydralisk, "zerg_hydralisk" },
         { BWAPI::UnitTypes::Zerg_Lair, "zerg_lair" },
         { BWAPI::UnitTypes::Zerg_Mutalisk, "zerg_mutalisk" },
-        { BWAPI::UnitTypes::Zerg_Scourge, "zerg_scourge" }
+        { BWAPI::UnitTypes::Zerg_Scourge, "zerg_scourge" },
+        { BWAPI::UnitTypes::Zerg_Lurker, "zerg_lurker" }
     };
 
     return values;
@@ -103,7 +104,8 @@ inline const std::vector<ResearchCapability> &researchCapabilities()
 {
     static const std::vector<ResearchCapability> values =
     {
-        { BWAPI::TechTypes::Burrowing, "burrowing" }
+        { BWAPI::TechTypes::Burrowing, "burrowing" },
+        { BWAPI::TechTypes::Lurker_Aspect, "lurker_aspect" }
     };
 
     return values;
