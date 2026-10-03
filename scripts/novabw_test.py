@@ -81,12 +81,20 @@ def spire_air():
         "NovaBW.PythonSpireAirIntegration",
     )
 
+def lurker():
+    gtest("NovaBW.ZergLurkerDeterministic")
+    gtest("NovaBW.ZergLurkerThroughAdapter")
+    python_test(
+        "python/lurker_test_server.py",
+        "NovaBW.PythonLurkerIntegration",
+    )
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "suite",
     nargs="?",
     default="core",
-    choices=["core", "gas-lair", "hydra", "spire-air"],
+    choices=["core", "gas-lair", "hydra", "spire-air", "lurker"],
 )
 parser.add_argument(
     "--no-build",
@@ -109,6 +117,9 @@ if args.suite in ("core", "hydra"):
 
 if args.suite in ("core", "spire-air"):
     spire_air()
+
+if args.suite in ("core", "lurker"):
+    lurker()
 
 print("\n======================================")
 print(" NOVABW REGRESSION PASSED:", args.suite)
