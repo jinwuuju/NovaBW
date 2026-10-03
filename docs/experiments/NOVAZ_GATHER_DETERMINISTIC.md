@@ -221,3 +221,37 @@ At this point Nova-Z has two end-to-end Python-controlled economy primitives:
 2. Produce a Drone
 
 Next curriculum target: Overlord production and supply management, validated by an actual increase in completed Overlord count and total supply.
+
+
+## Follow-on milestone: deterministic Overlord supply expansion
+
+Test: `NovaBW.ZergOverlordSupplyDeterministic`
+
+This test extends the economy curriculum beyond a single isolated production action. It performs a short deterministic sequence:
+
+1. issue mineral gathering to the starting Drones
+2. wait until at least 100 minerals are available
+3. issue Overlord production
+4. verify a completed Overlord appears
+5. verify total supply increases
+
+Observed result:
+
+- gathering issued to 4 Drones
+- Overlord Train issued at frame 359
+- minerals at Train: 106
+- starting completed Overlords: 1
+- starting BWAPI supplyTotal: 18
+- completed Overlords: 1 → 2
+- BWAPI supplyTotal: 18 → 34
+- completion/state change observed at frame 996
+- `NovaBW.ZergOverlordSupplyDeterministic`: PASS
+- runtime approximately 1.1 seconds
+
+BWAPI represents supply in half-supply units, so the observed 18 → 34 corresponds to the in-game displayed supply capacity increasing from 9 → 17. The Overlord definition reports 16 BWAPI supply units provided, matching the observed delta.
+
+This is the first Nova-Z deterministic multi-step economy sequence:
+
+Gather → accumulate resources → produce supply provider → verify actual supply expansion.
+
+Next step: permit `Zerg_Overlord` through the common Train action and validate the same sequence through `OpenBWAdapter`.
