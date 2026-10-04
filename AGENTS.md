@@ -10,6 +10,7 @@ Use these as the durable source of truth:
 - `docs/ZERG_FIRST_SCOPE.md`
 - `docs/MASTER_ROADMAP.md`
 - `docs/PRE_LEARNING_BASELINE_V1.md`
+- `docs/AUTONOMOUS_LEARNING_SYSTEM_V1.md`
 - `docs/CODEX_WORKFLOW.md`
 - `docs/experiments/NOVAZ_GATHER_DETERMINISTIC.md`
 
@@ -165,6 +166,21 @@ Probe PPO was infrastructure validation only, not the final gameplay policy.
 
 Before any PPO, self-play, league training, or autonomous policy improvement begins, the local repository must pass `docs/PRE_LEARNING_BASELINE_V1.md`. Do not bypass this gate.
 
+## Autonomous learning direction
+
+After `docs/PRE_LEARNING_BASELINE_V1.md` passes, follow `docs/AUTONOMOUS_LEARNING_SYSTEM_V1.md` as the learning execution contract.
+
+Key rules:
+
+- user-provided strategy knowledge is a first-class training asset
+- professional replays are optional future enrichment, not a v1 dependency
+- TvZ/PvZ opponents begin as parameterized knowledge-driven sparring families
+- skills are decomposed into a fine-grained prerequisite DAG
+- use six concurrent OpenBW actors as the initial production setting until a higher concurrency is benchmark-promoted
+- no checkpoint promotion from training loss alone
+- every learning stage requires immutable evaluation, rolling evaluation, regression checks, and explicit promote/reject decisions
+- preserve historical promoted checkpoints for later self-play/league sampling
+
 ## Near-term direction
 
 Continue registry-based Zerg coverage:
@@ -176,8 +192,10 @@ Continue registry-based Zerg coverage:
 
 Then:
 
-- replay-aligned trajectories
-- behavior cloning
+- structured strategy-card compilation
+- synthetic scenario / sparring trajectories
+- optional future replay-aligned trajectories
+- behavior cloning where supervised targets exist
 - curriculum RL
 - self-play
 - historical checkpoint opponents
