@@ -374,21 +374,24 @@ Progression:
 
 Evaluation must measure actual wins, not only damage or training loss.
 
-### Phase 5 - expert-data pipeline
+### Phase 5 - expert-knowledge and synthetic-data pipeline
 
 Goal:
 
-Turn professional human knowledge into training data.
+Turn human strategic knowledge into structured training assets without requiring a replay corpus.
 
-Pipeline:
+Primary v1 pipeline:
 
 human-readable strategy Markdown
 -> structured strategy records / JSONL
--> replay-aligned trajectories
--> state/action examples
--> behavior cloning / supervised learning
+-> parameterized TvZ/PvZ sparring families
+-> synthetic OpenBW scenarios and self-generated trajectories
+-> strategy labels / priors / evaluation criteria
+-> supervised learning where targets exist
 
-Metadata should preserve player, matchup, map, year/era, patch/version, source, and confidence.
+Professional replays are optional future enrichment, not a v1 dependency. If later acquired, replay-aligned trajectories can be added without changing the core pipeline.
+
+Metadata should preserve matchup, map, era/patch when known, source, confidence, timing confidence, parameter ranges, and evaluation metrics.
 
 ### Phase 6 - learned policy integration
 
@@ -414,6 +417,8 @@ command type
 -> unit type / building / tech
 
 ### Phase 7 - reinforcement learning
+
+Before this phase, follow `docs/AUTONOMOUS_LEARNING_SYSTEM_V1.md`: frozen-policy shadow runs, metric calibration, immutable evaluation, and fine-grained Skill DAG gates are mandatory.
 
 Methods:
 
@@ -486,6 +491,8 @@ Focus:
 - discovery of novel openings, transitions, and tactical patterns
 
 ## Evaluation ladder
+
+Every major release and promoted learning checkpoint should be evaluated using immutable, rolling, and regression sets. Training loss alone is never a promotion criterion.
 
 Every major release should be evaluated across:
 
