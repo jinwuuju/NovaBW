@@ -9,6 +9,7 @@ Use these as the durable source of truth:
 - `docs/ARCHITECTURE.md`
 - `docs/ZERG_FIRST_SCOPE.md`
 - `docs/MASTER_ROADMAP.md`
+- `docs/PRE_LEARNING_BASELINE_V1.md`
 - `docs/CODEX_WORKFLOW.md`
 - `docs/experiments/NOVAZ_GATHER_DETERMINISTIC.md`
 
@@ -159,6 +160,10 @@ Validated milestones include:
 - Lurker Aspect / Lurker
 
 Probe PPO was infrastructure validation only, not the final gameplay policy.
+
+## Learning gate
+
+Before any PPO, self-play, league training, or autonomous policy improvement begins, the local repository must pass `docs/PRE_LEARNING_BASELINE_V1.md`. Do not bypass this gate.
 
 ## Near-term direction
 
